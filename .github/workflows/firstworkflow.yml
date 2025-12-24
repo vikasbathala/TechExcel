@@ -12,4 +12,12 @@ jobs:
     
     - name: Step Two
       run: echo "Step Two Log"  
-    
+  job2:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Cowsays
+      uses: mscoutermarsh/cowsays-action@v1
+      with:
+        text: Vikas, Ship it!!!!!
+        color: red
+          
