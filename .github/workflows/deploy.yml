@@ -22,7 +22,7 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@main
+        uses: actions/checkout@v2
 
       - name: Login to Azure (OIDC)
         uses: azure/login@v2
