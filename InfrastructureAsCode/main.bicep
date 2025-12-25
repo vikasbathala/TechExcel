@@ -125,60 +125,24 @@ resource symbolicname 'Microsoft.KeyVault/vaults@2025-05-01' = {
   location: location
   name: keyvaultName
   properties: {
-    // accessPolicies: [
-    //   {
-    //     applicationId: 'string'
-    //     objectId: 'string'
-    //     permissions: {
-    //       certificates: [
-    //         'string'
-    //       ]
-    //       keys: [
-    //         'string'
-    //       ]
-    //       secrets: [
-    //         'string'
-    //       ]
-    //       storage: [
-    //         'string'
-    //       ]
-    //     }
-    //     tenantId: 'string'
-    //   }
-    // ]
-    // createMode: 'string'
-    enabledForDeployment: true
-    enabledForDiskEncryption: true
-    enabledForTemplateDeployment: true
-    enablePurgeProtection: false
+    tenantId: ${AZURE_TENANT_ID}
+    sku: {
+      family: 'A'
+      name: 'standard'
+    }
+
+    // RBAC instead of access policies (best practice)
     enableRbacAuthorization: true
+
+    // Security options
+    enabledForDeployment: false
+    enabledForDiskEncryption: false
+    enabledForTemplateDeployment: false
+
+    publicNetworkAccess: 'Enabled'
+    softDeleteRetentionInDays: 7
     enableSoftDelete: true
-  //   networkAcls: {
-  //     bypass: 'string'
-  //     defaultAction: 'string'
-  //     ipRules: [
-  //       {
-  //         value: 'string'
-  //       }
-  //     ]
-  //     virtualNetworkRules: [
-  //       {
-  //         id: 'string'
-  //         ignoreMissingVnetServiceEndpoint: true
-  //       }
-  //     ]
-  //   }
-  //   provisioningState: 'string'
-  //   publicNetworkAccess: 'string'
-  //   sku: {
-  //     family: 'string'
-  //     name: 'string'
-  //   }
-  //   softDeleteRetentionInDays: 30
-  //   tenantId: 'string'
-  //   vaultUri: 'string'
-  // }
-  // tags: {
-  //   {customized property}: 'string'
-  // }
+    enablePurgeProtection: false
+  }
+}
 }}
