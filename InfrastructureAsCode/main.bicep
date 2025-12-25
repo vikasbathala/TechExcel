@@ -142,6 +142,6 @@ resource keyVault 'Microsoft.KeyVault/vaults@2025-05-01' = {
     publicNetworkAccess: 'Enabled'
     softDeleteRetentionInDays: 7
     enableSoftDelete: true
-    enablePurgeProtection: false
+    enablePurgeProtection: true
   }
 }
