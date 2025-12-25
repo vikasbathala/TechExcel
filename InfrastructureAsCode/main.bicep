@@ -145,4 +145,3 @@ resource keyVault 'Microsoft.KeyVault/vaults@2025-05-01' = {
     enablePurgeProtection: false
   }
 }
-}}
