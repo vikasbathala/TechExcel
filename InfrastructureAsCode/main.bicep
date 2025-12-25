@@ -6,14 +6,17 @@ param environment string = 'dev'
 @description('Location of services')
 param location string = resourceGroup().location
 
-var webAppName = '${uniqueString(resourceGroup().id)}-${environment}'
-var appServicePlanName = '${uniqueString(resourceGroup().id)}-mpnp-asp'
-var logAnalyticsName = '${uniqueString(resourceGroup().id)}-mpnp-la'
-var appInsightsName = '${uniqueString(resourceGroup().id)}-mpnp-ai'
-var sku = 'B1'
-var registryName = '${uniqueString(resourceGroup().id)}mpnpreg'
-var registrySku = 'S1'
-var imageName = 'techboost/dotnetcoreapp'
+
+var keyvaultName = '${uniqueString(resourceGroup().id)}kv'
+
+// var webAppName = '${uniqueString(resourceGroup().id)}-${environment}'
+// var appServicePlanName = '${uniqueString(resourceGroup().id)}-mpnp-asp'
+// var logAnalyticsName = '${uniqueString(resourceGroup().id)}-mpnp-la'
+// var appInsightsName = '${uniqueString(resourceGroup().id)}-mpnp-ai'
+// var sku = 'B1'
+// var registryName = '${uniqueString(resourceGroup().id)}mpnpreg'
+// var registrySku = 'S1'
+// var imageName = 'techboost/dotnetcoreapp'
 // var startupCommand = ''
 
 // TODO: complete this script
@@ -119,63 +122,63 @@ var imageName = 'techboost/dotnetcoreapp'
 
 
 resource symbolicname 'Microsoft.KeyVault/vaults@2025-05-01' = {
-  location: 'string'
-  name: 'string'
+  location: 'location'
+  name: 'keyvaultName'
   properties: {
-    accessPolicies: [
-      {
-        applicationId: 'string'
-        objectId: 'string'
-        permissions: {
-          certificates: [
-            'string'
-          ]
-          keys: [
-            'string'
-          ]
-          secrets: [
-            'string'
-          ]
-          storage: [
-            'string'
-          ]
-        }
-        tenantId: 'string'
-      }
-    ]
-    createMode: 'string'
+    // accessPolicies: [
+    //   {
+    //     applicationId: 'string'
+    //     objectId: 'string'
+    //     permissions: {
+    //       certificates: [
+    //         'string'
+    //       ]
+    //       keys: [
+    //         'string'
+    //       ]
+    //       secrets: [
+    //         'string'
+    //       ]
+    //       storage: [
+    //         'string'
+    //       ]
+    //     }
+    //     tenantId: 'string'
+    //   }
+    // ]
+    // createMode: 'string'
     enabledForDeployment: true
     enabledForDiskEncryption: true
     enabledForTemplateDeployment: true
     enablePurgeProtection: false
     enableRbacAuthorization: true
     enableSoftDelete: true
-    networkAcls: {
-      bypass: 'string'
-      defaultAction: 'string'
-      ipRules: [
-        {
-          value: 'string'
-        }
-      ]
-      virtualNetworkRules: [
-        {
-          id: 'string'
-          ignoreMissingVnetServiceEndpoint: true
-        }
-      ]
-    }
-    provisioningState: 'string'
-    publicNetworkAccess: 'string'
-    sku: {
-      family: 'string'
-      name: 'string'
-    }
-    softDeleteRetentionInDays: 30
-    tenantId: 'string'
-    vaultUri: 'string'
-  }
+  //   networkAcls: {
+  //     bypass: 'string'
+  //     defaultAction: 'string'
+  //     ipRules: [
+  //       {
+  //         value: 'string'
+  //       }
+  //     ]
+  //     virtualNetworkRules: [
+  //       {
+  //         id: 'string'
+  //         ignoreMissingVnetServiceEndpoint: true
+  //       }
+  //     ]
+  //   }
+  //   provisioningState: 'string'
+  //   publicNetworkAccess: 'string'
+  //   sku: {
+  //     family: 'string'
+  //     name: 'string'
+  //   }
+  //   softDeleteRetentionInDays: 30
+  //   tenantId: 'string'
+  //   vaultUri: 'string'
+  // }
   // tags: {
   //   {customized property}: 'string'
   // }
-}
+}}
