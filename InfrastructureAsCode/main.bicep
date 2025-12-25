@@ -7,7 +7,7 @@ param environment string = 'dev'
 param location string = resourceGroup().location
 
 
-var keyvaultName = '${uniqueString(resourceGroup().id)}kv'
+var keyvaultName = '${uniqueString(resourceGroup().id)}kv${environment}'
 
 // var webAppName = '${uniqueString(resourceGroup().id)}-${environment}'
 // var appServicePlanName = '${uniqueString(resourceGroup().id)}-mpnp-asp'
