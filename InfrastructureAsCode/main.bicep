@@ -125,7 +125,7 @@ resource keyVault 'Microsoft.KeyVault/vaults@2025-05-01' = {
   location: location
   name: keyvaultName
   properties: {
-    tenantId: ${AZURE_TENANT_ID}
+    tenantId: '00b64bf0-90ae-4837-9d26-71d72801b61a'
     sku: {
       family: 'A'
       name: 'standard'
