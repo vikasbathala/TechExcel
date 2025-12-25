@@ -122,8 +122,8 @@ var keyvaultName = '${uniqueString(resourceGroup().id)}kv'
 
 
 resource symbolicname 'Microsoft.KeyVault/vaults@2025-05-01' = {
-  location: 'location'
-  name: 'keyvaultName'
+  location: location
+  name: keyvaultName
   properties: {
     // accessPolicies: [
     //   {
