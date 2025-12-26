@@ -173,7 +173,7 @@ var vnetName = '${uniqueString(resourceGroup().id)}-vnet'
 var subnetName = 'devsubnet'
 
 @description('Name of the Azure Firewall subnet')
-var firewallSubnetName = 'devAzureFirewallSubnet'
+var firewallSubnetName = 'AzureFirewallSubnet'
 
 @description('Name of the NSG')
 var nsgName = '${uniqueString(resourceGroup().id)}-nsg'
