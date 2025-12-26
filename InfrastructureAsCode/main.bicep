@@ -146,24 +146,6 @@ resource keyVault 'Microsoft.KeyVault/vaults@2025-05-01' = {
   }
 }
 
-@description('Name of the storage account')
-var storageAccountName = '${uniqueString(resourceGroup().id)}st${environment}'
-
-resource storageAccount 'Microsoft.Storage/storageAccounts@2023-01-01' = {
-  name: storageAccountName
-  location: location
-  sku: {
-    name: 'Standard_LRS' // Local-redundant storage
-  }
-  kind: 'StorageV2' // General-purpose v2 storage account
-  properties: {
-    accessTier: 'Hot' // Hot or Cool access tier
-    allowBlobPublicAccess: false // Disable public access for security
-    minimumTlsVersion: 'TLS1_2' // Enforce minimum TLS version
-    supportsHttpsTrafficOnly: true // Enforce HTTPS traffic only
-  }
-}
-
 // Networking Resources
 
 @description('Name of the virtual network')
@@ -210,6 +192,72 @@ resource virtualNetwork 'Microsoft.Network/virtualNetworks@2023-02-01' = {
     ]
   }
 }
+
+
+@description('Name of the private endpoint for the storage account')
+var privateEndpointName = '${uniqueString(resourceGroup().id)}-storage-pe'
+
+@description('Name of the private DNS zone for the storage account')
+var privateDnsZoneName = 'privatelink.blob.core.windows.net'
+
+// Private Endpoint for Storage Account
+resource privateEndpoint 'Microsoft.Network/privateEndpoints@2023-02-01' = {
+  name: privateEndpointName
+  location: location
+  properties: {
+    subnet: {
+      id: resourceId('Microsoft.Network/virtualNetworks/subnets', vnetName, subnetName)
+    }
+    privateLinkServiceConnections: [
+      {
+        name: 'storageAccountBlobConnection'
+        properties: {
+          privateLinkServiceId: storageAccount.id
+          groupIds: [
+            'blob'
+          ]
+        }
+      }
+    ]
+  }
+}
+
+// Private DNS Zone for Storage Account
+resource privateDnsZone 'Microsoft.Network/privateDnsZones@2023-02-01' = {
+  name: privateDnsZoneName
+  location: 'global'
+  properties: {}
+}
+
+// Virtual Network Link for Private DNS Zone
+resource privateDnsZoneVnetLink 'Microsoft.Network/privateDnsZones/virtualNetworkLinks@2023-02-01' = {
+  name: '${privateDnsZoneName}/${vnetName}-link'
+  properties: {
+    virtualNetwork: {
+      id: virtualNetwork.id
+    }
+    registrationEnabled: false
+  }
+}
+
+@description('Name of the storage account')
+var storageAccountName = '${uniqueString(resourceGroup().id)}st${environment}'
+
+resource storageAccount 'Microsoft.Storage/storageAccounts@2023-01-01' = {
+  name: storageAccountName
+  location: location
+  sku: {
+    name: 'Standard_LRS' // Local-redundant storage
+  }
+  kind: 'StorageV2' // General-purpose v2 storage account
+  properties: {
+    accessTier: 'Hot' // Hot or Cool access tier
+    allowBlobPublicAccess: false // Disable public access for security
+    minimumTlsVersion: 'TLS1_2' // Enforce minimum TLS version
+    supportsHttpsTrafficOnly: true // Enforce HTTPS traffic only
+  }
+}
+
 
 // Network Security Group
 resource nsg 'Microsoft.Network/networkSecurityGroups@2023-02-01' = {
