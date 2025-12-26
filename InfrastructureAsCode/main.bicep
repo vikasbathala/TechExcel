@@ -247,6 +247,21 @@ resource nsg 'Microsoft.Network/networkSecurityGroups@2023-02-01' = {
   }
 }
 
+@description('Name of the public IP for the Azure Firewall')
+var publicIpName = '${uniqueString(resourceGroup().id)}-firewall-pip'
+
+// Public IP Address
+resource publicIp 'Microsoft.Network/publicIPAddresses@2023-02-01' = {
+  name: publicIpName
+  location: location
+  properties: {
+    publicIPAllocationMethod: 'Static' // Static IP allocation
+    sku: {
+      name: 'Standard' // Required for Azure Firewall
+    }
+  }
+}
+
 // Azure Firewall
 resource firewall 'Microsoft.Network/azureFirewalls@2023-02-01' = {
   name: firewallName
@@ -262,6 +277,9 @@ resource firewall 'Microsoft.Network/azureFirewalls@2023-02-01' = {
         properties: {
           subnet: {
             id: resourceId('Microsoft.Network/virtualNetworks/subnets', vnetName, firewallSubnetName)
+          }
+          publicIPAddress: {
+            id: publicIp.id
           }
         }
       }
