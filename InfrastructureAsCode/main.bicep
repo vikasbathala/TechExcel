@@ -163,3 +163,124 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2023-01-01' = {
     supportsHttpsTrafficOnly: true // Enforce HTTPS traffic only
   }
 }
+
+// Networking Resources
+
+@description('Name of the virtual network')
+var vnetName = '${uniqueString(resourceGroup().id)}-vnet'
+
+@description('Name of the subnet')
+var subnetName = 'devsubnet'
+
+@description('Name of the NSG')
+var nsgName = '${uniqueString(resourceGroup().id)}-nsg'
+
+@description('Name of the firewall')
+var firewallName = '${uniqueString(resourceGroup().id)}-firewall'
+
+@description('Name of the private endpoint')
+var privateEndpointName = '${uniqueString(resourceGroup().id)}-private-endpoint'
+
+// Virtual Network
+resource virtualNetwork 'Microsoft.Network/virtualNetworks@2023-02-01' = {
+  name: vnetName
+  location: location
+  properties: {
+    addressSpace: {
+      addressPrefixes: [
+        '10.0.0.0/16'
+      ]
+    }
+    subnets: [
+      {
+        name: subnetName
+        properties: {
+          addressPrefix: '10.0.1.0/24'
+          networkSecurityGroup: {
+            id: nsg.id
+          }
+        }
+      }
+    ]
+  }
+}
+
+// Network Security Group
+resource nsg 'Microsoft.Network/networkSecurityGroups@2023-02-01' = {
+  name: nsgName
+  location: location
+  properties: {
+    securityRules: [
+      {
+        name: 'AllowSSH'
+        properties: {
+          priority: 100
+          direction: 'Inbound'
+          access: 'Allow'
+          protocol: 'Tcp'
+          sourcePortRange: '*'
+          destinationPortRange: '22'
+          sourceAddressPrefix: '*'
+          destinationAddressPrefix: '*'
+        }
+      }
+      {
+        name: 'AllowHTTP'
+        properties: {
+          priority: 200
+          direction: 'Inbound'
+          access: 'Allow'
+          protocol: 'Tcp'
+          sourcePortRange: '*'
+          destinationPortRange: '80'
+          sourceAddressPrefix: '*'
+          destinationAddressPrefix: '*'
+        }
+      }
+    ]
+  }
+}
+
+// Azure Firewall
+resource firewall 'Microsoft.Network/azureFirewalls@2023-02-01' = {
+  name: firewallName
+  location: location
+  properties: {
+    sku: {
+      name: 'AZFW_VNet'
+      tier: 'Standard'
+    }
+    ipConfigurations: [
+      {
+        name: 'ipconfig1'
+        properties: {
+          subnet: {
+            id: resourceId('Microsoft.Network/virtualNetworks/subnets', vnetName, subnetName)
+          }
+        }
+      }
+    ]
+  }
+}
+
+// Private Endpoint
+resource privateEndpoint 'Microsoft.Network/privateEndpoints@2023-02-01' = {
+  name: privateEndpointName
+  location: location
+  properties: {
+    subnet: {
+      id: resourceId('Microsoft.Network/virtualNetworks/subnets', vnetName, subnetName)
+    }
+    privateLinkServiceConnections: [
+      {
+        name: 'storageConnection'
+        properties: {
+          privateLinkServiceId: storageAccount.id
+          groupIds: [
+            'blob'
+          ]
+        }
+      }
+    ]
+  }
+}
