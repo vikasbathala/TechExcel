@@ -254,11 +254,11 @@ var publicIpName = '${uniqueString(resourceGroup().id)}-firewall-pip'
 resource publicIp 'Microsoft.Network/publicIPAddresses@2023-02-01' = {
   name: publicIpName
   location: location
+  sku: {
+    name: 'Standard' // Required for Azure Firewall
+  }
   properties: {
     publicIPAllocationMethod: 'Static' // Static IP allocation
-    sku: {
-      name: 'Standard' // Required for Azure Firewall
-    }
   }
 }
 
