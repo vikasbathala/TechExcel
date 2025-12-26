@@ -172,14 +172,14 @@ var vnetName = '${uniqueString(resourceGroup().id)}-vnet'
 @description('Name of the subnet')
 var subnetName = 'devsubnet'
 
+@description('Name of the Azure Firewall subnet')
+var firewallSubnetName = 'devAzureFirewallSubnet'
+
 @description('Name of the NSG')
 var nsgName = '${uniqueString(resourceGroup().id)}-nsg'
 
 @description('Name of the firewall')
 var firewallName = '${uniqueString(resourceGroup().id)}-firewall'
-
-@description('Name of the private endpoint')
-var privateEndpointName = '${uniqueString(resourceGroup().id)}-private-endpoint'
 
 // Virtual Network
 resource virtualNetwork 'Microsoft.Network/virtualNetworks@2023-02-01' = {
@@ -199,6 +199,12 @@ resource virtualNetwork 'Microsoft.Network/virtualNetworks@2023-02-01' = {
           networkSecurityGroup: {
             id: nsg.id
           }
+        }
+      }
+      {
+        name: firewallSubnetName
+        properties: {
+          addressPrefix: '10.0.2.0/24'
         }
       }
     ]
@@ -255,30 +261,8 @@ resource firewall 'Microsoft.Network/azureFirewalls@2023-02-01' = {
         name: 'ipconfig1'
         properties: {
           subnet: {
-            id: resourceId('Microsoft.Network/virtualNetworks/subnets', vnetName, subnetName)
+            id: resourceId('Microsoft.Network/virtualNetworks/subnets', vnetName, firewallSubnetName)
           }
-        }
-      }
-    ]
-  }
-}
-
-// Private Endpoint
-resource privateEndpoint 'Microsoft.Network/privateEndpoints@2023-02-01' = {
-  name: privateEndpointName
-  location: location
-  properties: {
-    subnet: {
-      id: resourceId('Microsoft.Network/virtualNetworks/subnets', vnetName, subnetName)
-    }
-    privateLinkServiceConnections: [
-      {
-        name: 'storageConnection'
-        properties: {
-          privateLinkServiceId: storageAccount.id
-          groupIds: [
-            'blob'
-          ]
         }
       }
     ]
