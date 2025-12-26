@@ -145,3 +145,21 @@ resource keyVault 'Microsoft.KeyVault/vaults@2025-05-01' = {
     enablePurgeProtection: true
   }
 }
+
+@description('Name of the storage account')
+var storageAccountName = '${uniqueString(resourceGroup().id)}st${environment}'
+
+resource storageAccount 'Microsoft.Storage/storageAccounts@2023-01-01' = {
+  name: storageAccountName
+  location: location
+  sku: {
+    name: 'Standard_LRS' // Local-redundant storage
+  }
+  kind: 'StorageV2' // General-purpose v2 storage account
+  properties: {
+    accessTier: 'Hot' // Hot or Cool access tier
+    allowBlobPublicAccess: false // Disable public access for security
+    minimumTlsVersion: 'TLS1_2' // Enforce minimum TLS version
+    supportsHttpsTrafficOnly: true // Enforce HTTPS traffic only
+  }
+}
