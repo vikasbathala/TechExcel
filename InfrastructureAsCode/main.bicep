@@ -223,14 +223,14 @@ resource privateEndpoint 'Microsoft.Network/privateEndpoints@2023-02-01' = {
 }
 
 // Private DNS Zone for Storage Account
-resource privateDnsZone 'Microsoft.Network/privateDnsZones@2023-02-01' = {
+resource privateDnsZone 'Microsoft.Network/privateDnsZones@2020-06-01' = {
   name: privateDnsZoneName
-  location: 'global'
+  location: 'global' // Private DNS zones are always in the 'global' location
   properties: {}
 }
 
 // Virtual Network Link for Private DNS Zone
-resource privateDnsZoneVnetLink 'Microsoft.Network/privateDnsZones/virtualNetworkLinks@2023-02-01' = {
+resource privateDnsZoneVnetLink 'Microsoft.Network/privateDnsZones/virtualNetworkLinks@2020-06-01' = {
   name: '${privateDnsZoneName}/${vnetName}-link'
   properties: {
     virtualNetwork: {
