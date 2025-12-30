@@ -34,17 +34,15 @@ jobs:
           subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
           enable-AzPSSession: true
 
-      - name: What-If Deployment (Dry Run)
-        uses: azure/arm-deploy@v1
+      - name: Bicep Dry Run (What-If)
+        uses: azure/cli@v2
         with:
-          scope: resourcegroup
-          subscriptionId: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
-          resourceGroupName: vikas_rg
-          region: eastus2
-          template: ./InfrastructureAsCode/main.bicep
-          parameters: environment=${{ github.event.inputs.appenv }}
-          deploymentMode: WhatIf
-          deploymentName: github-actions-bicep-whatif
+          inlineScript: |
+            az deployment group what-if \
+              --resource-group vikas_rg \
+              --template-file ./InfrastructureAsCode/main.bicep \
+              --parameters environment=${{ github.event.inputs.appenv }} \
+              --name github-actions-bicep-dry-run
 
   # Actual Deployment Stage
   deploy:
