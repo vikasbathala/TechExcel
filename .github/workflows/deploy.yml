@@ -17,43 +17,12 @@ permissions:
   pages: write
 
 jobs:
-  # Dry Run Stage
-  dry-run:
-    runs-on: ubuntu-latest
-    name: Dry Run Deployment
-
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v2
-
-      - name: Login to Azure (OIDC)
-        uses: azure/login@v2
-        with:
-          client-id: ${{ secrets.AZURE_CLIENT_ID }}
-          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
-          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
-          enable-AzPSSession: true
-
-      - name: Bicep Dry Run (What-If)
-        uses: azure/cli@v2
-        with:
-          inlineScript: |
-            az deployment group what-if \
-              --resource-group vikas_rg \
-              --template-file ./InfrastructureAsCode/main.bicep \
-              --parameters environment=${{ github.event.inputs.appenv }} \
-              --name github-actions-bicep-dry-run
-
-  # Actual Deployment Stage
   deploy:
     runs-on: ubuntu-latest
-    name: Bicep Deployment
-    needs: dry-run # Depends on the dry-run job
-    environment:
-      name: Bicep_Approve # Requires manual approval in GitHub Environments
+
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@main
 
       - name: Login to Azure (OIDC)
         uses: azure/login@v2
@@ -66,10 +35,10 @@ jobs:
       - name: Deploy Bicep template
         uses: azure/arm-deploy@v1
         with:
-          scope: resourcegroup
+          scope: subscription
           subscriptionId: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
-          resourceGroupName: vikas_rg
           region: eastus2
           template: ./InfrastructureAsCode/main.bicep
           parameters: environment=${{ github.event.inputs.appenv }}
           deploymentName: github-actions-bicep-deploy
+          
