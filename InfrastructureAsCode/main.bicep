@@ -203,7 +203,7 @@ var privateDnsZoneName = 'privatelink.blob.core.windows.net'
 // Private Endpoint for Storage Account
 resource privateEndpoint 'Microsoft.Network/privateEndpoints@2023-02-01' = {
   name: privateEndpointName
-  location: location
+  location: 'East US 2'
   properties: {
     subnet: {
       id: resourceId('Microsoft.Network/virtualNetworks/subnets', vnetName, subnetName)
@@ -232,7 +232,7 @@ resource privateDnsZone 'Microsoft.Network/privateDnsZones@2020-06-01' = {
 // Virtual Network Link for Private DNS Zone
 resource privateDnsZoneVnetLink 'Microsoft.Network/privateDnsZones/virtualNetworkLinks@2020-06-01' = {
   name: '${privateDnsZoneName}/${vnetName}-link'
-  location: location
+  location: 'East US 2'
   properties: {
     virtualNetwork: {
       id: virtualNetwork.id
