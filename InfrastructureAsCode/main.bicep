@@ -198,7 +198,7 @@ resource virtualNetwork 'Microsoft.Network/virtualNetworks@2023-02-01' = {
 var privateEndpointName = '${uniqueString(resourceGroup().id)}-storage-pe'
 
 @description('Name of the private DNS zone for the storage account')
-var privateDnsZoneName = 'privatelink.blob.core.windows.net'
+var privateDnsZoneName = 'privatelink.blob.${environment().storageEndpointSuffix}'
 
 // Private Endpoint for Storage Account
 resource privateEndpoint 'Microsoft.Network/privateEndpoints@2023-02-01' = {
