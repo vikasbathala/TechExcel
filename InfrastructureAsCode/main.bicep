@@ -231,7 +231,7 @@ resource privateDnsZone 'Microsoft.Network/privateDnsZones@2020-06-01' = {
 
 // Virtual Network Link for Private DNS Zone
 resource privateDnsZoneVnetLink 'Microsoft.Network/privateDnsZones/virtualNetworkLinks@2020-06-01' = {
-  name: '${privateDnsZoneName}/${vnetName}-link'
+  name: '${vnetName}-link'
   parent: privateDnsZone
   location: 'global'
   properties: {
